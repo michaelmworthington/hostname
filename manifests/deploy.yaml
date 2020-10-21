@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: staging
+  name: sonatype
 spec:
   finalizers:
   - kubernetes
@@ -10,13 +10,13 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hostname
-  namespace: staging
+  name: sonatype
+  namespace: sonatype
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: hostname
+      app: sonatype
       version: v1
   strategy:
     rollingUpdate:
@@ -26,12 +26,16 @@ spec:
   template:
     metadata:
       labels:
-        app: hostname
+        app: sonatype
         version: v1
     spec:
       containers:
-      - image: rstarmer/hostname:v1
+      - image: sonatype/nexus3:3.16.2
         imagePullPolicy: Always
-        name: hostname
+        name: nexus3
+        resources: {}
+      - image: sonatype/nexus-iq-server:1.65.0
+        imagePullPolicy: Always
+        name: iq-server
         resources: {}
       restartPolicy: Always
